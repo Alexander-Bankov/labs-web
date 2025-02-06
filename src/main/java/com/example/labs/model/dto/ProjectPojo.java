@@ -1,6 +1,6 @@
 package com.example.labs.model.dto;
 
-import com.example.labs.model.other.Project;
+import com.example.labs.model.entity.Project;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
