@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -27,23 +28,33 @@ public class SecurityConfig {
     private List<String> role;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .cors(cors->cors.disable())
+//                .authorizeHttpRequests((requests) -> requests
+//                        .requestMatchers("/", "/home", "/login").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/project/**").hasRole(role.get(1))
+//                        .requestMatchers(HttpMethod.PUT, "/api/project/**").hasRole(role.get(1))
+//                        .requestMatchers(HttpMethod.DELETE, "/api/project/**").hasRole(role.get(1))
+//                        .requestMatchers("/swagger-ui.html").hasRole(role.get(1))
+//                        .anyRequest().authenticated()
+//                ) .formLogin((form) -> form
+//                        .loginPage("/login.html")
+//                        .loginProcessingUrl("/login")
+//                        .defaultSuccessUrl("/api/project?search")
+//                        .failureUrl("/login.html?error=true")
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout.permitAll());
+//        return http.build();
         http
-                .cors(cors->cors.disable())
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/project/**").hasRole(role.get(1))
-                        .requestMatchers(HttpMethod.PUT, "/api/project/**").hasRole(role.get(1))
-                        .requestMatchers(HttpMethod.DELETE, "/api/project/**").hasRole(role.get(1))
-                        .requestMatchers("/swagger-ui.html").hasRole(role.get(1))
-                        .anyRequest().authenticated()
-                ) .formLogin((form) -> form
-                        .loginPage("/login.html")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/api/project?search")
-                        .failureUrl("/login.html?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout.permitAll());
+                .csrf((csrf) -> {csrf.disable();})
+                .authorizeHttpRequests(
+                        (requests) -> requests
+                                .requestMatchers(HttpMethod.POST, "/projects").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/projects/{id}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/projects/{id}").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                ).httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
