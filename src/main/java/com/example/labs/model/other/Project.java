@@ -11,6 +11,7 @@ import java.util.Date;
 @Setter
 @Data
 public class Project {
+    private Long projectId; // Добавляем идентификатор проекта
     private String nameProject;
     private String descriptionProject;
     private LocalDate startDate;

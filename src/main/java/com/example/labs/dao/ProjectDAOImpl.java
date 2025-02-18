@@ -6,8 +6,12 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,34 +32,48 @@ public class ProjectDAOImpl implements ProjectDAO {
         return project;
     };
 
-    public boolean createProject(Project project) {
+    public Project createProject(Project project) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         try {
-            int result = jdbcTemplate.update("insert into Project (nameProject, descriptionProject, startDate, finishDate) values (?, ?, ?, ?)",
-                    project.getNameProject(), project.getDescriptionProject(), project.getStartDate(), project.getFinishDate());
-            if (result == 1)
-                return true;
-            else
-                return false;
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        "INSERT INTO Project (nameProject, descriptionProject, startDate, finishDate) VALUES (?, ?, ?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, project.getNameProject());
+                ps.setString(2, project.getDescriptionProject());
+                ps.setObject(3, project.getStartDate());
+                ps.setObject(4, project.getFinishDate());
+                return ps;
+            }, keyHolder);
+
+            // Используйте getKeyList() для более чем одного ключа
+            List<Map<String, Object>> keys = keyHolder.getKeyList();
+            if (keys != null && keys.size() > 0) {
+                project.setProjectId(((Number) keys.get(0).get("projectid")).longValue()); // Измените на свое имя поля
+            }
+
+            return project;
         } catch (DuplicateKeyException e) {
-            return false;
+            return null; // В случае конфликта возвращаем null
         }
     }
 
-    public int modifyProject(String name, Project project) {
+    public int modifyProject(Long projectid, Project project) {
         return jdbcTemplate.update("update Project SET nameProject = ?, descriptionProject = ?, startDate = ?, finishDate = ? WHERE nameProject = ?",
-                new Object[] { project.getNameProject(), project.getDescriptionProject(), project.getStartDate(), project.getFinishDate(), name }
+                new Object[] { project.getNameProject(), project.getDescriptionProject(), project.getStartDate(), project.getFinishDate(), projectid }
         );
     }
 
-    public void deleteProject(String nameProject) {
-        Map<String, String> param = Map.of("nameProject", nameProject);
-        namedParameterJdbcTemplate.update("DELETE from Project where nameProject = :nameProject", param);
+    public void deleteProject(Long projectid) {
+        Map<String, Long> param = Map.of("projectid", projectid);
+        namedParameterJdbcTemplate.update("DELETE from Project where projectid = :projectid", param);
     }
 
-    public Project getProject(String nameProject) {
-        List<Project> resultList = jdbcTemplate.query("select * from project where nameproject = ?",
+    public Project getProject(Long projectid) {
+        List<Project> resultList = jdbcTemplate.query("select * from project where projectid = ?",
                 projectMapper,
-                new Object[] { nameProject }
+                projectid
         );
         if (resultList.size() == 0)
             return null;
@@ -66,7 +84,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public List<Project> getProjectsWithFilter(LocalDate startTime, LocalDate finishTime) {
         return jdbcTemplate.query("select * from project where startdate > ? and finishdate < ?",
                 projectMapper,
-                new Object[] { startTime, finishTime }
+                startTime, finishTime
         );
     }
 

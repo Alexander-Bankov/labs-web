@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ProjectDAO {
-    public boolean createProject(Project project);
-    public int modifyProject(String name, Project project);
-    public void deleteProject(String nameProject);
+    public Project createProject(Project project);
+    public int modifyProject(Long projectid, Project project);
+    public void deleteProject(Long projectid);
 
-    public Project getProject(String nameProject);
+    public Project getProject(Long projectid);
 
     public List<Project> getProjectsWithFilter(LocalDate startTime, LocalDate finishTime);
 

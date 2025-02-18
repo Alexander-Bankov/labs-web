@@ -17,6 +17,7 @@ public class ProjectPojo {
     private String descriptionProject;
     private LocalDate startDate;
     private LocalDate finishDate;
+
     public static ProjectPojo fromEntity (Project project) {
         ProjectPojo pojo = new ProjectPojo();
         pojo.setDescriptionProject(project.getDescriptionProject());
@@ -25,6 +26,7 @@ public class ProjectPojo {
         pojo.setStartDate(project.getStartDate());
         return pojo;
     }
+
     public static Project toEntity (ProjectPojo pojo) {
         Project project = new Project();
         project.setDescriptionProject(pojo.getDescriptionProject());

@@ -17,26 +17,26 @@ public class MainService {
     @Autowired
     private ProjectDAOImpl projectDAO;
 
-    public ProjectPojo getProjectByName(String nameProject) {
-        Project project = projectDAO.getProject(nameProject);
+    public ProjectPojo getProjectByName(Long projectid) {
+        Project project = projectDAO.getProject(projectid);
         if (project != null)
             return ProjectPojo.fromEntity(project);
         else
             return null;
     }
 
-    public boolean createProject(ProjectPojo pojo) {
-        Project project = ProjectPojo.toEntity(pojo);
-        return projectDAO.createProject(project);
+    public Project createProject(Project project) {
+        Project createdProject = projectDAO.createProject(project);
+        return createdProject; // Возвращаем объект Project с установленным идентификатором
     }
 
-    public int updateProject (String name, ProjectPojo pojo) {
+    public int updateProject (Long projectid, ProjectPojo pojo) {
         Project project = ProjectPojo.toEntity(pojo);
-        return projectDAO.modifyProject(name, project);
+        return projectDAO.modifyProject(projectid, project);
     }
 
-    public void deleteProjectByName (String projectName) {
-        projectDAO.deleteProject(projectName);
+    public void deleteProjectByName (Long projectid) {
+        projectDAO.deleteProject(projectid);
     }
 
     public List<ProjectPojo> getProjectsWithFilter (LocalDate start, LocalDate finish) {
