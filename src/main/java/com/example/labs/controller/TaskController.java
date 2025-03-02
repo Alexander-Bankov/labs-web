@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/projects/{projectId}/tasks")
+@RequestMapping("/api/project/{projectId}/task")
 public class TaskController {
     @Autowired
     private TaskService taskService;
@@ -47,7 +47,7 @@ public class TaskController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @DeleteMapping("/clean")
+    @DeleteMapping("/deleteCompletedTasks")
     public ResponseEntity<?> deleteCompletedTask (@PathVariable("projectId") long projectId) {
         taskService.deleteCompletedTaskByProjectId(projectId);
         return new ResponseEntity<>(null, HttpStatus.OK);

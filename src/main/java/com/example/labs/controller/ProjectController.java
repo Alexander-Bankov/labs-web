@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/projects")
+@RequestMapping("api/projects")
 public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @GetMapping
+    @GetMapping(params = {"search"})
     public ResponseEntity<?> getProjectByDescFilter (@RequestParam("search") Optional<String> phrase) {
         List<ProjectPojo> listPojos = projectService.getProjectByDescFilter(phrase);
         return new ResponseEntity<>(listPojos,
@@ -46,7 +46,7 @@ public class ProjectController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/open")
+    @GetMapping("/countUncompletedTasks")
     public ResponseEntity<?> getOpenedTasks() {
         return new ResponseEntity<>(projectService.getOpenedTask(), HttpStatus.OK);
     }
