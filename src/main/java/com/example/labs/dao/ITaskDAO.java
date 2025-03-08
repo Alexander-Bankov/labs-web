@@ -10,15 +10,15 @@ import java.util.List;
 
 @Repository
 public interface ITaskDAO extends JpaRepository<Task, Long> {
-    public List<Task> findByProjectId(long id);
+     List<Task> findByProjectId(long id);
 
-    public void deleteAllByProjectIdAndIsCompletedTrue(long projectId);
+     void deleteAllByProjectIdAndIsCompletedTrue(long projectId);
 
-    public void deleteAllByProjectId(long projectId);
+     void deleteAllByProjectId(long projectId);
 
-    public Task findByIdAndProjectId(long id, long projectId);
+     Task findByIdAndProjectId(long id, long projectId);
 
     @Transactional
-    public void deleteByIdAndProjectId(long id, long projectId);
+    void deleteByIdAndProjectId(long id, long projectId);
 }
 

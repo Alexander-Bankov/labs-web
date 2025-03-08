@@ -14,5 +14,5 @@ public interface IProjectDAO extends JpaRepository<Project, Long> {
                                                                                                     String pattern1);
 
     @Query("SELECT p.id, (SELECT COUNT(t) FROM Task t WHERE t.isCompleted = False AND p.id = t.project.id) FROM Project p")
-    public List<Object[]> findProjectsAndTaskCount();
+     List<Object[]> findProjectsAndTaskCount();
 }

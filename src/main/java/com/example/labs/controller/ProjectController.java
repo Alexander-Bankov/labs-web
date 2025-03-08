@@ -16,7 +16,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @GetMapping(params = {"search"})
+    @GetMapping
     public ResponseEntity<?> getProjectByDescFilter (@RequestParam("search") Optional<String> phrase) {
         List<ProjectPojo> listPojos = projectService.getProjectByDescFilter(phrase);
         return new ResponseEntity<>(listPojos,

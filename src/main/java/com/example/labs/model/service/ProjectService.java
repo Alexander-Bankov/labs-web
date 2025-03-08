@@ -63,7 +63,7 @@ public class ProjectService {
 
     public void deleteProjectById(long projectId) {
         projectDAO.deleteById(projectId);
-        taskDAO.deleteAllByProjectId(projectId);
+        //taskDAO.deleteAllByProjectId(projectId);
     }
 
     public HashMap<Long, Long> getOpenedTask() {
