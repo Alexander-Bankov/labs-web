@@ -13,6 +13,7 @@ import java.util.Date;
 @Setter
 @Data
 public class ProjectPojo {
+    private Long id;
     private String nameProject;
     private String descriptionProject;
     private LocalDate startDate;
@@ -23,6 +24,7 @@ public class ProjectPojo {
         pojo.setFinishDate(project.getFinishDate());
         pojo.setNameProject(project.getNameProject());
         pojo.setStartDate(project.getStartDate());
+        pojo.setId(project.getId());
         return pojo;
     }
     public static Project toEntity (ProjectPojo pojo) {
